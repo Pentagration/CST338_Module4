@@ -10,7 +10,25 @@ public class Assign4
     public static void main(String[] args)
     {
         String[] testString = new String[]
-                {"This ", "is ", "a ", "good ", "SAMPLE ", "to ", "look ", "at."};
+        {
+            "                                               ",
+            "                                               ",
+            "                                               ",
+            "     * * * * * * * * * * * * * * * * * * * * * ",
+            "     *                                       * ",
+            "     ****** **** ****** ******* ** *** *****   ",
+            "     *     *    ****************************** ",
+            "     * **    * *        **  *    * * *   *     ",
+            "     *   *    *  *****    *   * *   *  **  *** ",
+            "     *  **     * *** **   **  *    **  ***  *  ",
+            "     ***  * **   **  *   ****    *  *  ** * ** ",
+            "     *****  ***  *  * *   ** ** **  *   * *    ",
+            "     ***************************************** ",  
+            "                                               ",
+            "                                               ",
+            "                                               "
+   
+         };
         BarcodeImage test1 = new BarcodeImage();
         BarcodeImage test2 = new BarcodeImage(testString);
 
@@ -80,80 +98,35 @@ class BarcodeImage implements Cloneable
     // Takes 1d string array. Converts to "the internal 2d array of booleans"
     public BarcodeImage(String[] strData)
     {
-        this.imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
-
-        if (checkSize(strData) == true)
+      this.imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
+      int row = MAX_HEIGHT - 1;
+      for (int i = strData.length - 1; i >= 0; i--)
+      {
+         for (int j = 0; j < strData[i].length(); j++)
+         {
+            if (strData[i].charAt(j) == '*')
+               imageData[row][j] = true;
+            else
+               imageData[row][j] = false;
+         }
+         --row;
+      }
+      //add borders
+      for (int i = MAX_HEIGHT - 1; i >= 0; i--)
+      {
+        for (int j = MAX_WIDTH - 1; j >= 0; j--)
         {
-            int column = 1;
-            int row = 0;
-
-            //convert each letter to ascii then binary and set appropriately
-            //1s are *, 0s are blank
-            for (int i = 0; i < strData.length; i++) // columns
-            {
-                //pull word into character array
-                char[] chars = strData[i].toCharArray();
-
-                for (int j = 0; j < chars.length; j++)
-                {
-                    //converts letter to binary
-                    int temp = (int) chars[j];
-                    String temp2 = Integer.toBinaryString(temp);
-
-                    //add *s to the rows where binary = 1
-                    char[] binary = temp2.toCharArray();
-
-                    if (binary.length > row)
-                    {
-                        row = binary.length;
-                    }
-
-                    for (int k = 0; k < binary.length; k++)
-                    {
-                        if (binary[k] == '1')
-                        {
-                            this.setPixel((MAX_HEIGHT - (binary.length - k) - 1), column, true);
-                        }
-                        else
-                        {
-                            this.setPixel((MAX_HEIGHT - (binary.length - k) - 1),  column,  false);
-                        }
-                    }
-
-                    column++;
-                }
-
-            }
-            //bottom spine
-            for (int x = 0; x <= column; x++)
-            {
-                this.setPixel(MAX_HEIGHT - 1, x, true);
-            }
-
-            //leftside spine
-            for (int y = 0; y <= row + 2; y++)
-            {
-                this.setPixel((MAX_HEIGHT - y - 1), 0, true);
-            }
-
-            //top spine
-            for (int x = 0; x <= column; x++)
-            {
-                if (x % 2 == 0)
-                {
-                    this.setPixel(MAX_HEIGHT - (row + 3), x, true);
-                }
-            }
-
-            //rightside spine
-            for (int y = 0; y <= row + 2; y++)
-            {
-                if (y % 2 == 0) {
-                    this.setPixel((MAX_HEIGHT - y - 1), column, true);
-                }
-            }
+            if (i == 0)
+               imageData[i][j] = true;
+            else if (i == MAX_HEIGHT - 1)
+               imageData[i][j] = true;
+            else if (j ==0)
+               imageData[i][j] = true;
+            else if (j == MAX_WIDTH - 1)
+               imageData[i][j] = true;
         }
-    }
+      }
+    }//END BARCODE IMAGE ctor
     //Constructors END
 
     //Individual Pixel getter
