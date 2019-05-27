@@ -33,13 +33,10 @@ public class Assign4
       BarcodeImage bc = new BarcodeImage(sImageIn);
       bc.displayToConsole();
       DataMatrix dm = new DataMatrix(bc);
-      System.out.println("LeftOffset");
-      System.out.println(dm.getLeftOffset());
-      System.out.println("BottomOffset");
-      System.out.println(dm.getBottomOffset());
+      dm.displayImageToConsole();
      
       // First secret message
-      //dm.translateImageToText();
+      dm.translateImageToText();
       dm.displayTextToConsole();
       dm.displayImageToConsole();
    }
@@ -359,49 +356,43 @@ class DataMatrix implements BarcodeIO
    @Override
    public boolean translateImageToText()
    {
-      // read each column and create binary number
-      // convert binary number to decimal for ascii
-      // convert ascii number to letter
+      String tempText = "";
 
-      // char[] to hold each letter
-      char[] tempChar = new char[this.text.length()];
-      // String to hold the binary number generated
-      String binNumber = "";
-      // int for ascii number, will use Integer.parseInt(binaryString, 2)
-      int ascii = 0;
-      //int for char[] counter
-      int counter = 0;
-
-      for (int i = 1; i < this.getActualWidth(); i++)
+      for (int i = 1; i < this.getActualWidth() - 1; i++)
       {
-         for (int j = 0; j < this.getActualHeight(); j++)
-         {
-            //generate binary number string
-            if (this.image.getPixel(i, j) == true)
-            {
-               binNumber = binNumber + '1';
-            }
-            else
-            {
-               binNumber = binNumber + '0';
-            }
-
-            //convert to ascii
-            ascii = Integer.parseInt(binNumber, 2);
-
-            //convert ascii to char and add to array
-            tempChar[counter] = (char) ascii;
-
-            //increment counter and reset others
-            counter++;
-            binNumber = "";
-            ascii = 0;
-         }
+         tempText = tempText + readCharFromCol(i);
       }
 
-      this.text = new String(tempChar);
+      System.out.println(tempText);
 
       return true;
+   }
+   
+   private char readCharFromCol(int col)
+   {
+      String binNumber = "";
+      
+      for (int i = BarcodeImage.MAX_HEIGHT - 1 - this.getActualHeight() + 2; 
+            i < BarcodeImage.MAX_HEIGHT - 1; i++)
+      {
+         //generate binary number string
+         if (this.image.getPixel(i, col) == true)
+         {
+            binNumber = binNumber + '1';
+         }
+         else
+         {
+            binNumber = binNumber + '0';
+         }
+      }
+      
+      //convert to ascii
+      int ascii = Integer.parseInt(binNumber, 2);
+      
+      //convert to char
+      char tempChar = (char) ascii;
+      
+      return tempChar;
    }
 
    @Override
@@ -472,11 +463,6 @@ class DataMatrix implements BarcodeIO
    {
       shiftImageDown(getBottomOffset());
       shiftImageLeft(getLeftOffset());
-      System.out.println("clean complete");
-      /*int offset = BarcodeImage.MAX_HEIGHT - this.actualHeight;
-      shiftImageDown(offset);
-      offset = BarcodeImage.MAX_WIDTH - this.actualWidth;
-      shiftImageLeft(offset);*/
       
    }
 
