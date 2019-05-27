@@ -5,7 +5,7 @@
  * EXERCISE: Module 4 Optical Barcode
  */
 
-public class Module4
+public class Assign4
 {
     public static void main(String[] args)
     {
