@@ -9,7 +9,7 @@ public class Assign4
 {
    public static void main(String[] args)
    {
-      String[] testString = new String[]
+      String[] sImageIn = new String[]
       {
          "                                               ",
          "                                               ",
@@ -29,18 +29,19 @@ public class Assign4
          "                                               "
    
       };
-      BarcodeImage test1 = new BarcodeImage();
-      BarcodeImage test2 = new BarcodeImage(testString);
-
-      test1.displayToConsole();
-      test2.displayToConsole();
-
-      String test = "Datamatrix test";
-      DataMatrix test3 = new DataMatrix(test);
-
-      test3.displayTextToConsole();
-      //test3.generateImageFromText();
-      test3.displayImageToConsole();
+      
+      BarcodeImage bc = new BarcodeImage(sImageIn);
+      bc.displayToConsole();
+      DataMatrix dm = new DataMatrix(bc);
+      System.out.println("LeftOffset");
+      System.out.println(dm.getLeftOffset());
+      System.out.println("BottomOffset");
+      System.out.println(dm.getBottomOffset());
+     
+      // First secret message
+      dm.translateImageToText();
+      dm.displayTextToConsole();
+      dm.displayImageToConsole();
    }
 }
 
@@ -105,6 +106,7 @@ class BarcodeImage implements Cloneable
          --row;
       }
       //add borders
+      /*
       for (int i = MAX_HEIGHT - 1; i >= 0; i--)
       {
         for (int j = MAX_WIDTH - 1; j >= 0; j--)
@@ -118,7 +120,7 @@ class BarcodeImage implements Cloneable
             else if (j == MAX_WIDTH - 1)
                imageData[i][j] = true;
         }
-      }
+      }*/
    }//END BARCODE IMAGE ctor
    //Constructors END
 
@@ -247,12 +249,12 @@ class DataMatrix implements BarcodeIO
    {
       try
       {
-         image = (BarcodeImage)bc.clone();
+         this.image = (BarcodeImage)bc.clone();
          this.actualHeight = getActualHeight();
          this.actualWidth = getActualWidth();
          cleanImage();//not implemented yet
          return true;
-      } catch (CloneNotSupportedException e) {
+      } catch (Exception e) {
       }
       return false;
    }
@@ -468,14 +470,37 @@ class DataMatrix implements BarcodeIO
 
    private void cleanImage()
    {
-      offset = BarcodeImage.MAX_HEIGHT - this.actualHeight;
+      int bottom = getBottomOffset();
+      int left = getLeftOffset();
+      
+      shiftImageDown(bottom);
+      //shiftImageLeft(left);
+      
+      /*int offset = BarcodeImage.MAX_HEIGHT - this.actualHeight;
       shiftImageDown(offset);
       offset = BarcodeImage.MAX_WIDTH - this.actualWidth;
-      shiftImageLeft(offset);
+      shiftImageLeft(offset);*/
+      
    }
 
    private void shiftImageDown(int offset)
    {
+      for (int y = BarcodeImage.MAX_HEIGHT - 1; y > 0; y--)
+      {
+         for (int x = 0; x < BarcodeImage.MAX_WIDTH; x++)
+         {
+            if (y - offset > 0)
+            {
+               this.image.setPixel(y, x, this.image.getPixel(y - offset + 1, x));
+            }
+            else
+            {
+               this.image.setPixel(x, y, false);
+            }
+         }
+      }
+      
+      /*
       for(int x = actualWidth; x >=0; x--)
       {
          for(int y = actualHeight; y >= 0; y--)
@@ -489,11 +514,66 @@ class DataMatrix implements BarcodeIO
                this.setPixel(x, y, false);
             }
          }
-      }
+      }*/
    }
 
    private void shiftImageLeft(int offset)
    {
-
+      for (int x = 0; x < BarcodeImage.MAX_WIDTH; x++)
+      {
+         for (int y = 0; y < BarcodeImage.MAX_HEIGHT; y++)
+         {
+            if (x + offset < BarcodeImage.MAX_WIDTH)
+            {
+               this.image.setPixel(y, x, this.image.getPixel(y, x + offset));
+            }
+            else
+            {
+               this.image.setPixel(x, y, false);
+            }
+         }
+      }
+   }
+   
+   public int getLeftOffset()
+   {
+      int leftOffset = 0;
+      
+      outerfor:
+      for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++)
+      {
+         innerfor:
+         for (int j = 0; j < BarcodeImage.MAX_HEIGHT; j++)
+         {
+            leftOffset = j;
+            if (this.image.getPixel(i, j) == true)
+            {
+               break outerfor;
+            }
+         }
+      }
+      
+      return leftOffset;
+   }
+   
+   public int getBottomOffset()
+   {
+      int bottomOffset = 0;
+      
+      outerfor:
+         for (int j = BarcodeImage.MAX_HEIGHT - 1; j > 0; j--)
+         {
+            innerfor:
+            for (int i = BarcodeImage.MAX_WIDTH - 1; i > 0; i--)
+            {
+               bottomOffset = BarcodeImage.MAX_HEIGHT -j;
+               if (this.image.getPixel(j, i) == true)
+               {
+                  break outerfor;
+               }
+            }
+         }
+      
+      return bottomOffset;
    }
 }
