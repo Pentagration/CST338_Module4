@@ -46,25 +46,18 @@ public class Assign4
 
 interface BarcodeIO
 {
-<<<<<<< HEAD
    // All Implimentations expected to store img and text
    //BarcodeImage img;
 
    //String text;
 
-=======
-   //these methods are implemented in the DataMatrix class
->>>>>>> ba6234d3b8f7e2137ef65e28f5d12bb72b65019b
    public boolean scan(BarcodeImage bc);
    public boolean readText(String text);
    public boolean generateImageFromText();
    public boolean translateImageToText();
    public void displayTextToConsole();
    public void displayImageToConsole();
-<<<<<<< HEAD
 
-=======
->>>>>>> ba6234d3b8f7e2137ef65e28f5d12bb72b65019b
 }
 
 class BarcodeImage implements Cloneable
