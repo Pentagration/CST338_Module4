@@ -39,7 +39,7 @@ public class Assign4
       System.out.println(dm.getBottomOffset());
      
       // First secret message
-      dm.translateImageToText();
+      //dm.translateImageToText();
       dm.displayTextToConsole();
       dm.displayImageToConsole();
    }
@@ -470,12 +470,9 @@ class DataMatrix implements BarcodeIO
 
    private void cleanImage()
    {
-      int bottom = getBottomOffset();
-      int left = getLeftOffset();
-      
-      shiftImageDown(bottom);
-      //shiftImageLeft(left);
-      
+      shiftImageDown(getBottomOffset());
+      shiftImageLeft(getLeftOffset());
+      System.out.println("clean complete");
       /*int offset = BarcodeImage.MAX_HEIGHT - this.actualHeight;
       shiftImageDown(offset);
       offset = BarcodeImage.MAX_WIDTH - this.actualWidth;
@@ -492,29 +489,10 @@ class DataMatrix implements BarcodeIO
             if (y - offset > 0)
             {
                this.image.setPixel(y, x, this.image.getPixel(y - offset + 1, x));
-            }
-            else
-            {
-               this.image.setPixel(x, y, false);
+               this.image.setPixel(y-offset + 1, x, false);
             }
          }
       }
-      
-      /*
-      for(int x = actualWidth; x >=0; x--)
-      {
-         for(int y = actualHeight; y >= 0; y--)
-         {
-            if(y == 0 || x == MAX_HEIGHT - 1)
-            {
-               this.setPixel(x, y, true);
-            }
-            else
-            {
-               this.setPixel(x, y, false);
-            }
-         }
-      }*/
    }
 
    private void shiftImageLeft(int offset)
@@ -526,10 +504,6 @@ class DataMatrix implements BarcodeIO
             if (x + offset < BarcodeImage.MAX_WIDTH)
             {
                this.image.setPixel(y, x, this.image.getPixel(y, x + offset));
-            }
-            else
-            {
-               this.image.setPixel(x, y, false);
             }
          }
       }
