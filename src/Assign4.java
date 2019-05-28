@@ -159,27 +159,6 @@ class BarcodeImage implements Cloneable
       }
    }
 
-   // Optional function
-   // Checks incoming data for "very conceivable size or null error"
-   private boolean checkSize(String[] data)
-   {
-      int size = 0;
-
-      for (int i = 0; i < data.length; i++)
-      {
-         size = size + data[i].length();
-      }
-
-      if(size > MAX_WIDTH || data == null) //should this be -1?
-      {
-         return false;
-      }
-      else
-      {
-         return true;
-      }
-   }
-
    // Optional Testing method
    public void displayToConsole()
    {
