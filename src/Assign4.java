@@ -343,8 +343,6 @@ class DataMatrix implements BarcodeIO
    {
       //add *s to the rows where binary = 1
       char[] binary = code.toCharArray();
-      System.out.println(binary);
-      System.out.println(binary.length);
       
       //clear image
       for (int i = 0; i < BarcodeImage.MAX_HEIGHT - 1; i++)
