@@ -251,6 +251,39 @@ class DataMatrix implements BarcodeIO
       return true;
    }
 
+   private void addSpine(int row, int column)
+   {
+      //bottom spine
+      for (int x = 0; x <= column; x++)
+      {
+         this.image.setPixel(BarcodeImage.MAX_HEIGHT - 1, x, true);
+      }
+
+      //leftside spine
+      for (int y = 0; y <= row + 2; y++)
+      {
+         this.image.setPixel((BarcodeImage.MAX_HEIGHT - y - 1), 0, true);
+      }
+
+      //top spine
+      for (int x = 0; x <= column; x++)
+      {
+         if (x % 2 == 0)
+         {
+            this.image.setPixel(BarcodeImage.MAX_HEIGHT - (row + 3), x, true);
+         }
+      }
+
+      //rightside spine
+      for (int y = 0; y <= row + 2; y++)
+      {
+         if (y % 2 == 0) 
+         {
+            this.image.setPixel((BarcodeImage.MAX_HEIGHT - y - 1), column, true);
+         }
+      }
+   }
+
    @Override
    public boolean generateImageFromText()
    {
@@ -279,37 +312,7 @@ class DataMatrix implements BarcodeIO
 
             column++;
             }
-
-         //bottom spine
-         for (int x = 0; x <= column; x++)
-         {
-            this.image.setPixel(BarcodeImage.MAX_HEIGHT - 1, x, true);
-         }
-
-         //leftside spine
-         for (int y = 0; y <= row + 2; y++)
-         {
-            this.image.setPixel((BarcodeImage.MAX_HEIGHT - y - 1), 0, true);
-         }
-
-         //top spine
-         for (int x = 0; x <= column; x++)
-         {
-            if (x % 2 == 0)
-            {
-               this.image.setPixel(BarcodeImage.MAX_HEIGHT - (row + 3), x, true);
-            }
-         }
-
-         //rightside spine
-         for (int y = 0; y <= row + 2; y++)
-         {
-            if (y % 2 == 0) 
-            {
-               this.image.setPixel((BarcodeImage.MAX_HEIGHT - y - 1), column, true);
-            }
-         }
-
+         addSpine(row, column);
          return true;
       }
       else
