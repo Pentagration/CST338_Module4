@@ -337,11 +337,13 @@ class DataMatrix implements BarcodeIO
       {
          if (binary[k] == '1')
          {
-            this.image.setPixel((BarcodeImage.MAX_HEIGHT - (binary.length - k) - 1), col, true);
+            this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
+                  (binary.length - k) - 1), col, true);
          }
          else
          {
-            this.image.setPixel((BarcodeImage.MAX_HEIGHT - (binary.length - k) - 1),  col,  false);
+            this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
+                  (binary.length - k) - 1),  col,  false);
          }
       }
       
@@ -440,7 +442,6 @@ class DataMatrix implements BarcodeIO
    private int computeSignalWidth()
    {
       int width = 0;
-      int height = getActualHeight();
       for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++)
       {
          if (image.getPixel(BarcodeImage.MAX_HEIGHT - 1, i) == false)
