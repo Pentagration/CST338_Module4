@@ -54,7 +54,7 @@ public class Assign4
       };
      
       BarcodeImage bc = new BarcodeImage(sImageIn);
-      DataMatrix dm = new DataMatrix(bc);
+      BarcodeIO dm = new DataMatrix(bc);
      
       // First secret message
       dm.translateImageToText();
