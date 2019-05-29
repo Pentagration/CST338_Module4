@@ -54,7 +54,7 @@ public class Assign4
       };
      
       BarcodeImage bc = new BarcodeImage(sImageIn);
-      BarcodeIO dm = new DataMatrix(bc);
+      DataMatrix dm = new DataMatrix(bc);
      
       // First secret message
       dm.translateImageToText();
@@ -219,6 +219,8 @@ class DataMatrix implements BarcodeIO
    {
       this.text = "";
       scan(image);
+      this.actualHeight = this.getActualHeight();
+      this.actualWidth = this.getActualWidth();
    }
 
    //string constructor
@@ -227,6 +229,8 @@ class DataMatrix implements BarcodeIO
       readText(text);
       this.image = new BarcodeImage();
       generateImageFromText();
+      this.actualHeight = this.getActualHeight();
+      this.actualWidth = this.getActualWidth();
    }
 
    @Override
@@ -247,8 +251,16 @@ class DataMatrix implements BarcodeIO
    @Override
    public boolean readText(String text)
    {
-      this.text = text;
-      return true;
+      if (text == null || text.length() >= BarcodeImage.MAX_WIDTH)
+      {
+         return false;
+      }
+      else 
+      {
+         this.text = text;
+         return true;
+      }
+      
    }
 
    private void addSpine(int row, int column)
@@ -323,31 +335,38 @@ class DataMatrix implements BarcodeIO
    
    public boolean writeCharToCol(int col, String code)
    {
-      //add *s to the rows where binary = 1
-      char[] binary = code.toCharArray();
+      if (code == null)
+      {
+         return false;
+      }
+      else
+      {
+         //add *s to the rows where binary = 1
+         char[] binary = code.toCharArray();
       
-      //clear image
-      for (int i = 0; i < BarcodeImage.MAX_HEIGHT - 1; i++)
-      {
-         this.image.setPixel(i,  col,  false);
-      }
+         //clear image
+         for (int i = 0; i < BarcodeImage.MAX_HEIGHT - 1; i++)
+         {
+            this.image.setPixel(i,  col,  false);
+         }
 
-      //write letter
-      for (int k = 0; k < binary.length; k++)
-      {
-         if (binary[k] == '1')
+         //write letter
+         for (int k = 0; k < binary.length; k++)
          {
-            this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
+            if (binary[k] == '1')
+            {
+               this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
                   (binary.length - k) - 1), col, true);
-         }
-         else
-         {
-            this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
+            }
+            else
+            {
+               this.image.setPixel((BarcodeImage.MAX_HEIGHT - 
                   (binary.length - k) - 1),  col,  false);
+            }
          }
-      }
       
       return true;
+      }
    }
 
    @Override
@@ -359,10 +378,17 @@ class DataMatrix implements BarcodeIO
       {
          tempText = tempText + readCharFromCol(i);
       }
+      
+      if (tempText == "")
+      {
+         return false;
+      }
+      else
+      {
+         System.out.println(tempText);
 
-      System.out.println(tempText);
-
-      return true;
+         return true;
+      }
    }
    
    private char readCharFromCol(int col)
